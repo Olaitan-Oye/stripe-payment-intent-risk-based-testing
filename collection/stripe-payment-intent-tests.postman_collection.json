@@ -70,7 +70,208 @@
     },
     {
       "name": "02 Happy Path",
-      "item": []
+      "item": [
+        {
+          "name": "POST Create PaymentIntent",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"PaymentIntent created with correct amount and currency\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.amount).to.eql(1000);\r",
+                  "    pm.expect(jsonData.currency).to.eql(\"usd\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Status is requires_payment_method\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.status).to.eql(\"requires_payment_method\");\r",
+                  "});\r",
+                  "\r",
+                  "// Store the PaymentIntent ID so the next request (Confirm) can use it\r",
+                  "const jsonData = pm.response.json();\r",
+                  "pm.environment.set(\"payment_intent_id\", jsonData.id);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{stripe_secret_key}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "amount",
+                  "value": "1000",
+                  "type": "text",
+                  "uuid": "88c454ca-98be-4ec4-8fc9-50d7ce47806c"
+                },
+                {
+                  "key": "currency",
+                  "value": "usd",
+                  "type": "text",
+                  "uuid": "3e2433cb-b113-4d86-9b17-e222eea9f075"
+                },
+                {
+                  "key": "payment_method_types[]",
+                  "value": "card",
+                  "type": "text",
+                  "uuid": "2072cc4c-1530-4f58-ad68-532d94ae415d"
+                },
+                {
+                  "key": "capture_method",
+                  "value": "manual",
+                  "type": "text",
+                  "uuid": "02d1a395-d717-4a18-9ba1-a5a70fff6aac"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/payment_intents",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payment_intents"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Confirm PaymentIntent",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"PaymentIntent status is requires_capture\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.status).to.eql(\"requires_capture\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{stripe_secret_key}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "payment_method",
+                  "value": "pm_card_visa",
+                  "type": "text",
+                  "uuid": "c6bd4952-f477-41e5-a106-2f90c261a1f8"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/payment_intents/{{payment_intent_id}}/confirm",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payment_intents",
+                "{{payment_intent_id}}",
+                "confirm"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Post Capture PaymentIntent",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"PaymentIntent status is succeeded\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.status).to.eql(\"succeeded\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Amount received matches amount authorized\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.amount_received).to.eql(jsonData.amount);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{stripe_secret_key}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/payment_intents/{{payment_intent_id}}/capture",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payment_intents",
+                "{{payment_intent_id}}",
+                "capture"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     },
     {
       "name": "03 Validation (EP/BVA)",
