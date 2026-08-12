@@ -275,7 +275,806 @@
     },
     {
       "name": "03 Validation (EP/BVA)",
-      "item": []
+      "item": [
+        {
+          "name": "POST Create - Amount At Minimum (50)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Request succeeds with 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Amount matches minimum boundary (50)\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.amount).to.eql(50);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Status is requires_payment_method\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.status).to.eql(\"requires_payment_method\");\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{stripe_secret_key}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "amount",
+                  "value": "50",
+                  "type": "text",
+                  "uuid": "88c454ca-98be-4ec4-8fc9-50d7ce47806c"
+                },
+                {
+                  "key": "currency",
+                  "value": "usd",
+                  "type": "text",
+                  "uuid": "3e2433cb-b113-4d86-9b17-e222eea9f075"
+                },
+                {
+                  "key": "payment_method_types[]",
+                  "value": "card",
+                  "type": "text",
+                  "uuid": "2072cc4c-1530-4f58-ad68-532d94ae415d"
+                },
+                {
+                  "key": "capture_method",
+                  "value": "manual",
+                  "type": "text",
+                  "uuid": "02d1a395-d717-4a18-9ba1-a5a70fff6aac"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/payment_intents",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payment_intents"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Create -Amount Below Minimum (49)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Request is rejected with 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error indicates amount is too small\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.error.code).to.eql(\"amount_too_small\");\r",
+                  "});\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{stripe_secret_key}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "amount",
+                  "value": "49",
+                  "type": "text",
+                  "uuid": "88c454ca-98be-4ec4-8fc9-50d7ce47806c"
+                },
+                {
+                  "key": "currency",
+                  "value": "usd",
+                  "type": "text",
+                  "uuid": "3e2433cb-b113-4d86-9b17-e222eea9f075"
+                },
+                {
+                  "key": "payment_method_types[]",
+                  "value": "card",
+                  "type": "text",
+                  "uuid": "2072cc4c-1530-4f58-ad68-532d94ae415d"
+                },
+                {
+                  "key": "capture_method",
+                  "value": "manual",
+                  "type": "text",
+                  "uuid": "02d1a395-d717-4a18-9ba1-a5a70fff6aac"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/payment_intents",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payment_intents"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Create - Above Minimum (51)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Request succeeds with 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Amount is allowed \", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.amount).to.eql(51);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Status is requires_payment_method\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.status).to.eql(\"requires_payment_method\");\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{stripe_secret_key}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "amount",
+                  "value": "51",
+                  "type": "text",
+                  "uuid": "88c454ca-98be-4ec4-8fc9-50d7ce47806c"
+                },
+                {
+                  "key": "currency",
+                  "value": "usd",
+                  "type": "text",
+                  "uuid": "3e2433cb-b113-4d86-9b17-e222eea9f075"
+                },
+                {
+                  "key": "payment_method_types[]",
+                  "value": "card",
+                  "type": "text",
+                  "uuid": "2072cc4c-1530-4f58-ad68-532d94ae415d"
+                },
+                {
+                  "key": "capture_method",
+                  "value": "manual",
+                  "type": "text",
+                  "uuid": "02d1a395-d717-4a18-9ba1-a5a70fff6aac"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/payment_intents",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payment_intents"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Create - A Negative (-100)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Request is rejected with 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error indicates invalid integer amount\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.error.code).to.eql(\"parameter_invalid_integer\");\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{stripe_secret_key}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "amount",
+                  "value": "-100",
+                  "type": "text",
+                  "uuid": "88c454ca-98be-4ec4-8fc9-50d7ce47806c"
+                },
+                {
+                  "key": "currency",
+                  "value": "usd",
+                  "type": "text",
+                  "uuid": "3e2433cb-b113-4d86-9b17-e222eea9f075"
+                },
+                {
+                  "key": "payment_method_types[]",
+                  "value": "card",
+                  "type": "text",
+                  "uuid": "2072cc4c-1530-4f58-ad68-532d94ae415d"
+                },
+                {
+                  "key": "capture_method",
+                  "value": "manual",
+                  "type": "text",
+                  "uuid": "02d1a395-d717-4a18-9ba1-a5a70fff6aac"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/payment_intents",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payment_intents"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Create - Zero (0)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Request is rejected with 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error indicates invalid integer amount\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.error.code).to.eql(\"parameter_invalid_integer\");\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{stripe_secret_key}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "amount",
+                  "value": "0",
+                  "type": "text",
+                  "uuid": "88c454ca-98be-4ec4-8fc9-50d7ce47806c"
+                },
+                {
+                  "key": "currency",
+                  "value": "usd",
+                  "type": "text",
+                  "uuid": "3e2433cb-b113-4d86-9b17-e222eea9f075"
+                },
+                {
+                  "key": "payment_method_types[]",
+                  "value": "card",
+                  "type": "text",
+                  "uuid": "2072cc4c-1530-4f58-ad68-532d94ae415d"
+                },
+                {
+                  "key": "capture_method",
+                  "value": "manual",
+                  "type": "text",
+                  "uuid": "02d1a395-d717-4a18-9ba1-a5a70fff6aac"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/payment_intents",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payment_intents"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Create - Amount Decimal (100.5)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Request is rejected with 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error indicates invalid integer amount\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.error.code).to.eql(\"parameter_invalid_integer\");\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{stripe_secret_key}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "amount",
+                  "value": "100.5",
+                  "type": "text",
+                  "uuid": "88c454ca-98be-4ec4-8fc9-50d7ce47806c"
+                },
+                {
+                  "key": "currency",
+                  "value": "usd",
+                  "type": "text",
+                  "uuid": "3e2433cb-b113-4d86-9b17-e222eea9f075"
+                },
+                {
+                  "key": "payment_method_types[]",
+                  "value": "card",
+                  "type": "text",
+                  "uuid": "2072cc4c-1530-4f58-ad68-532d94ae415d"
+                },
+                {
+                  "key": "capture_method",
+                  "value": "manual",
+                  "type": "text",
+                  "uuid": "02d1a395-d717-4a18-9ba1-a5a70fff6aac"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/payment_intents",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payment_intents"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Create - Large Amount",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Request succeeds with 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Amount is allowed\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.amount).to.eql(99999999999);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Status is requires_payment_method\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.status).to.eql(\"requires_payment_method\");\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{stripe_secret_key}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "amount",
+                  "value": "99999999999",
+                  "type": "text",
+                  "uuid": "88c454ca-98be-4ec4-8fc9-50d7ce47806c"
+                },
+                {
+                  "key": "currency",
+                  "value": "usd",
+                  "type": "text",
+                  "uuid": "3e2433cb-b113-4d86-9b17-e222eea9f075"
+                },
+                {
+                  "key": "payment_method_types[]",
+                  "value": "card",
+                  "type": "text",
+                  "uuid": "2072cc4c-1530-4f58-ad68-532d94ae415d"
+                },
+                {
+                  "key": "capture_method",
+                  "value": "manual",
+                  "type": "text",
+                  "uuid": "02d1a395-d717-4a18-9ba1-a5a70fff6aac"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/payment_intents",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payment_intents"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Create - Unsupported currency",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Request fails with 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error message contains 'Invalid currency'\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.error.param).to.eql(\"currency\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error type is invalid_request_error\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.error.type).to.eql(\"invalid_request_error\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{stripe_secret_key}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "amount",
+                  "value": "100000",
+                  "type": "text",
+                  "uuid": "88c454ca-98be-4ec4-8fc9-50d7ce47806c"
+                },
+                {
+                  "key": "currency",
+                  "value": "mmm",
+                  "type": "text",
+                  "uuid": "3e2433cb-b113-4d86-9b17-e222eea9f075"
+                },
+                {
+                  "key": "payment_method_types[]",
+                  "value": "card",
+                  "type": "text",
+                  "uuid": "2072cc4c-1530-4f58-ad68-532d94ae415d"
+                },
+                {
+                  "key": "capture_method",
+                  "value": "manual",
+                  "type": "text",
+                  "uuid": "02d1a395-d717-4a18-9ba1-a5a70fff6aac"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/payment_intents",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payment_intents"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Create - Currency Uppercase (USD)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Request succeed with 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Uppercase currency is normalized to lowercase\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.currency).to.eql(\"usd\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Status is 'requires_payment_method'\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.status).to.eql(\"requires_payment_method\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{stripe_secret_key}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "amount",
+                  "value": "100000",
+                  "type": "text",
+                  "uuid": "88c454ca-98be-4ec4-8fc9-50d7ce47806c"
+                },
+                {
+                  "key": "currency",
+                  "value": "USD",
+                  "type": "text",
+                  "uuid": "3e2433cb-b113-4d86-9b17-e222eea9f075"
+                },
+                {
+                  "key": "payment_method_types[]",
+                  "value": "card",
+                  "type": "text",
+                  "uuid": "2072cc4c-1530-4f58-ad68-532d94ae415d"
+                },
+                {
+                  "key": "capture_method",
+                  "value": "manual",
+                  "type": "text",
+                  "uuid": "02d1a395-d717-4a18-9ba1-a5a70fff6aac"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/payment_intents",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payment_intents"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Create - Missing Currency Field",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Request returned failed with 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Invalid currency\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.error.param).to.eql(\"currency\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"invalid_request_error\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.error.type).to.eql(\"invalid_request_error\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{stripe_secret_key}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "amount",
+                  "value": "100000",
+                  "type": "text",
+                  "uuid": "88c454ca-98be-4ec4-8fc9-50d7ce47806c"
+                },
+                {
+                  "key": "currency",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "3e2433cb-b113-4d86-9b17-e222eea9f075"
+                },
+                {
+                  "key": "payment_method_types[]",
+                  "value": "card",
+                  "type": "text",
+                  "uuid": "2072cc4c-1530-4f58-ad68-532d94ae415d"
+                },
+                {
+                  "key": "capture_method",
+                  "value": "manual",
+                  "type": "text",
+                  "uuid": "02d1a395-d717-4a18-9ba1-a5a70fff6aac"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/payment_intents",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payment_intents"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     },
     {
       "name": "04 Authentication",
