@@ -3,6 +3,7 @@
 ## Finding 1: Inconsistent error codes across amount validation
 **Severity:** Low (documentation/consistency issue, not a functional bug)
 **Environment:** Stripe Sandbox, PaymentIntent creation endpoint
+
 **Steps:**
 1. Create a PaymentIntent with amount = 49 (one cent below USD minimum)
 2. Create a PaymentIntent with amount = 0
