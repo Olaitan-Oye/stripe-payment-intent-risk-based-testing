@@ -1078,7 +1078,310 @@
     },
     {
       "name": "04 Authentication",
-      "item": []
+      "item": [
+        {
+          "name": "POST Create - Missing Authorization",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Request failed with 401\", function () {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"invalid_request_error\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.error.type).to.eql(\"invalid_request_error\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "amount",
+                  "value": "100000",
+                  "type": "text",
+                  "uuid": "88c454ca-98be-4ec4-8fc9-50d7ce47806c"
+                },
+                {
+                  "key": "currency",
+                  "value": "USD",
+                  "type": "text",
+                  "uuid": "3e2433cb-b113-4d86-9b17-e222eea9f075"
+                },
+                {
+                  "key": "payment_method_types[]",
+                  "value": "card",
+                  "type": "text",
+                  "uuid": "2072cc4c-1530-4f58-ad68-532d94ae415d"
+                },
+                {
+                  "key": "capture_method",
+                  "value": "manual",
+                  "type": "text",
+                  "uuid": "02d1a395-d717-4a18-9ba1-a5a70fff6aac"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/payment_intents",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payment_intents"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Create - Auth Invalid/garbage key",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Request failed with 401\", function () {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"invalid_request_error\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.error.type).to.eql(\"invalid_request_error\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authorization_secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "amount",
+                  "value": "100000",
+                  "type": "text",
+                  "uuid": "88c454ca-98be-4ec4-8fc9-50d7ce47806c"
+                },
+                {
+                  "key": "currency",
+                  "value": "USD",
+                  "type": "text",
+                  "uuid": "3e2433cb-b113-4d86-9b17-e222eea9f075"
+                },
+                {
+                  "key": "payment_method_types[]",
+                  "value": "card",
+                  "type": "text",
+                  "uuid": "2072cc4c-1530-4f58-ad68-532d94ae415d"
+                },
+                {
+                  "key": "capture_method",
+                  "value": "manual",
+                  "type": "text",
+                  "uuid": "02d1a395-d717-4a18-9ba1-a5a70fff6aac"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/payment_intents",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payment_intents"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Create - Auth Publishable Key on Secret Endpoint",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Request failed with 403\", function () {\r",
+                  "    pm.response.to.have.status(403);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error type is invalid_request_error\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.error.type).to.eql(\"invalid_request_error\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error code is secret_key_required\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.error.code).to.eql(\"secret_key_required\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authorization_secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "amount",
+                  "value": "100000",
+                  "type": "text",
+                  "uuid": "88c454ca-98be-4ec4-8fc9-50d7ce47806c"
+                },
+                {
+                  "key": "currency",
+                  "value": "USD",
+                  "type": "text",
+                  "uuid": "3e2433cb-b113-4d86-9b17-e222eea9f075"
+                },
+                {
+                  "key": "payment_method_types[]",
+                  "value": "card",
+                  "type": "text",
+                  "uuid": "2072cc4c-1530-4f58-ad68-532d94ae415d"
+                },
+                {
+                  "key": "capture_method",
+                  "value": "manual",
+                  "type": "text",
+                  "uuid": "02d1a395-d717-4a18-9ba1-a5a70fff6aac"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/payment_intents",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payment_intents"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Create - Auth Missing Bearer Prefix",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Request failed with 401\", function () {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error type is invalid_request_error\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.error.type).to.eql(\"invalid_request_error\");\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{stripe_secret_key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "amount",
+                  "value": "100000",
+                  "type": "text",
+                  "uuid": "88c454ca-98be-4ec4-8fc9-50d7ce47806c"
+                },
+                {
+                  "key": "currency",
+                  "value": "USD",
+                  "type": "text",
+                  "uuid": "3e2433cb-b113-4d86-9b17-e222eea9f075"
+                },
+                {
+                  "key": "payment_method_types[]",
+                  "value": "card",
+                  "type": "text",
+                  "uuid": "2072cc4c-1530-4f58-ad68-532d94ae415d"
+                },
+                {
+                  "key": "capture_method",
+                  "value": "manual",
+                  "type": "text",
+                  "uuid": "02d1a395-d717-4a18-9ba1-a5a70fff6aac"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/payment_intents",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payment_intents"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     },
     {
       "name": "05 State Transition",
